@@ -23,6 +23,7 @@
 FROM gcr.io/google-containers/debian-base-amd64:0.3.2
 
 COPY Gemfile /Gemfile
+COPY fluent-plugin-google-cloud.gem /fluent-plugin-google-cloud.gem
 
 # 1. Install & configure dependencies.
 # 2. Install fluentd via ruby.
@@ -36,6 +37,7 @@ RUN BUILD_DEPS="make gcc g++ libc6-dev ruby-dev libffi-dev" \
                      ruby \
     && echo 'gem: --no-document' >> /etc/gemrc \
     && gem install --file Gemfile \
+    && gem install /fluent-plugin-google-cloud.gem \
     && apt-get purge -y --auto-remove \
                      -o APT::AutoRemove::RecommendsImportant=false \
                      $BUILD_DEPS \
@@ -43,7 +45,8 @@ RUN BUILD_DEPS="make gcc g++ libc6-dev ruby-dev libffi-dev" \
               /var/lib/apt/lists/* \
               /usr/lib/ruby/gems/*/cache/*.gem \
               /var/log/* \
-              /var/tmp/*
+              /var/tmp/* \
+    && rm -rf /fluent-plugin-google-cloud.gem
 
 # Copy the Fluentd configuration file for logging Docker container logs.
 COPY fluent.conf /etc/fluent/fluent.conf
