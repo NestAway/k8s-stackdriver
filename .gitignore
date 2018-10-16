@@ -23,3 +23,4 @@ Session.vim
 
 # Idea files
 **/.idea/**
+fluentd-gcp-image/fluent-plugin-google-cloud.gem
